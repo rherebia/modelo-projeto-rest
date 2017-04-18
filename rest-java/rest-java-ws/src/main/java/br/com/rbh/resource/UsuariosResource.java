@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 import br.com.rbh.dominio.Usuario;
 import br.com.rbh.request.UsuarioRequest;
 import br.com.rbh.service.UsuarioListService;
-import br.com.rbh.service.UsuarioService;
 
 @Path("usuarios")
 public class UsuariosResource {
