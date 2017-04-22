@@ -105,7 +105,7 @@ public class UsuariosResource {
 	public Response criar(UsuarioRequest usuarioRequest) throws Exception {
 		Usuario usuario = usuarioService.criar(usuarioRequest.getUsuario());
 		
-		URI uri = new URI("/usuarios/" + usuario.getId());
+		URI uri = new URI("/api/usuarios/" + usuario.getId());
 		
 		return Response.created(uri).build();
 	}
