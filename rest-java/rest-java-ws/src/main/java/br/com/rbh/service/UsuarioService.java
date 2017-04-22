@@ -9,10 +9,10 @@ import javax.persistence.TypedQuery;
 
 import br.com.rbh.dominio.Usuario;
 
-//@Stateless
+@Stateless
 public class UsuarioService {
 
-	//@PersistenceContext
+	@PersistenceContext
 	private EntityManager em;
 	
 	public Usuario get(Long id) {

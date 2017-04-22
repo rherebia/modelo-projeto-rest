@@ -31,13 +31,13 @@ public class UsuarioResourceTest {
 
 	@BeforeClass
 	public static void setup() {
-		ResourceConfig rc = new ResourceConfig().packages("br.com.rbh");
+		ResourceConfig rc = new ResourceConfig().packages("br.com.rbh.resource");
 
 		httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create("http://localhost:7378"), rc);
 
 		Client client = ClientBuilder.newClient();
 
-		webTarget = client.target("http://localhost:7378/api/usuarios");
+		webTarget = client.target("http://localhost:7378/usuarios");
 	}
 
 	@AfterClass

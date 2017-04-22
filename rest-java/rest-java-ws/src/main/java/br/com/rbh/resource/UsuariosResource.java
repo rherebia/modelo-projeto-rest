@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
@@ -22,13 +23,13 @@ import com.google.gson.Gson;
 
 import br.com.rbh.dominio.Usuario;
 import br.com.rbh.request.UsuarioRequest;
-import br.com.rbh.service.UsuarioListService;
+import br.com.rbh.service.UsuarioService;
 
 @Path("usuarios")
 public class UsuariosResource {
 	
 	@EJB
-	private UsuarioListService usuarioService;
+	private UsuarioService usuarioService;
 
 	@GET
 	@Path("{id}")
@@ -62,36 +63,41 @@ public class UsuariosResource {
 		
 		Gson gson = new Gson();
 		
-		Integer totalUsuarios = 0;
-		Integer ultimaPagina = totalUsuarios/limit;
+		ResponseBuilder responseBuilder = Response.status(Status.OK)
+				.entity(gson.toJson(usuarios));
 		
-		URI first = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
-				.resolveTemplate("offset", 0)
-				.resolveTemplate("limit", limit)
-				.build();
-		
-		URI last = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
-				.resolveTemplate("offset", ultimaPagina)
-				.resolveTemplate("limit", limit)
-				.build();
-		
-		URI next = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
-				.resolveTemplate("offset", offset < ultimaPagina ? offset + 1 : ultimaPagina)
-				.resolveTemplate("limit", limit)
-				.build();
-		
-		URI previous = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
-				.resolveTemplate("offset", offset > 0 ? offset - 1 : 0)
-				.resolveTemplate("limit", limit)
-				.build();
-		
-		return Response.status(Status.OK)
-				.entity(gson.toJson(usuarios))
+		if (limit != null && offset != null) {
+			Integer totalUsuarios = 0;
+			Integer ultimaPagina = totalUsuarios/limit;
+			
+			URI first = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
+					.resolveTemplate("offset", 0)
+					.resolveTemplate("limit", limit)
+					.build();
+			
+			URI last = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
+					.resolveTemplate("offset", ultimaPagina)
+					.resolveTemplate("limit", limit)
+					.build();
+			
+			URI next = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
+					.resolveTemplate("offset", offset < ultimaPagina ? offset + 1 : ultimaPagina)
+					.resolveTemplate("limit", limit)
+					.build();
+			
+			URI previous = UriBuilder.fromUri("/usuarios?offset={offset}&limit={limit}")
+					.resolveTemplate("offset", offset > 0 ? offset - 1 : 0)
+					.resolveTemplate("limit", limit)
+					.build();
+			
+			responseBuilder
 				.link(first.toString(), "first")
 				.link(last.toString(), "last")
 				.link(next.toString(), "next")
-				.link(previous.toString(), "previous")
-				.build();
+				.link(previous.toString(), "previous");
+		}
+		
+		return responseBuilder.build();
 	}
 	
 	@POST
